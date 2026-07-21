@@ -92,14 +92,12 @@ source = { virtual = "." }
 dependencies = [
     { name = "pyinstaller" },
     { name = "python-docx" },
-    { name = "tkinterdnd2" },
 ]
 
 [package.metadata]
 requires-dist = [
     { name = "pyinstaller", specifier = ">=6.21.0" },
     { name = "python-docx", specifier = ">=1.2.0" },
-    { name = "tkinterdnd2", specifier = ">=0.6.2" },
 ]
 
 [[package]]
@@ -171,15 +169,6 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/34/26/f5d29e25ffdb535afef2d35cdb55b325298f96debd670da4c325e08d70f4/setuptools-83.0.0.tar.gz", hash = "sha256:025bccbbf0fa05b6192bc64ae1e7b16e001fd6d6d4d5de03c97b1c1ade523bef", size = 1154254, upload-time = "2026-07-04T15:31:22.699Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/5d/40/e1e72872c6354b306daef1703549e8e83b4d43cfea356311bf722a043752/setuptools-83.0.0-py3-none-any.whl", hash = "sha256:29b23c360f22f414dc7336bb39178cc7bcbf6021ed2733cde173f09dba19abb3", size = 1008090, upload-time = "2026-07-04T15:31:20.885Z" },
-]
-
-[[package]]
-name = "tkinterdnd2"
-version = "0.6.2"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/3b/68/a7400de3c15038522b00540480a1273809ad4680b941e9c5f82520b27f2f/tkinterdnd2-0.6.2.tar.gz", hash = "sha256:e015c2d863c9292e61d0294dea43010ff99c3cc9423e564676e04df413de9916", size = 729841, upload-time = "2026-07-05T00:05:21.316Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/33/1b/039642c212c24887a941af706b006365f3733d88aab383f0cf151768403c/tkinterdnd2-0.6.2-py3-none-any.whl", hash = "sha256:b6a8b229d26286c022bb2fbd311c2e431e4d9bbab8133be80e9c98e7bcf9fe59", size = 811654, upload-time = "2026-07-05T00:05:19.682Z" },
 ]
 
 [[package]]
