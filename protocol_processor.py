@@ -19,7 +19,7 @@ from tkinter import ttk, filedialog, messagebox
 import docx
 from docx.shared import Pt, Inches
 from docx.enum.text import WD_ALIGN_PARAGRAPH
-
+from docx.enum.table import WD_CELL_VERTICAL_ALIGNMENT
 
 # =============================================================================
 #  Шрифти для крос-платформного вигляду GUI (Windows / Linux / macOS)
@@ -140,7 +140,7 @@ class ExecutorsManager(tk.Toplevel):
         main.pack(fill=tk.BOTH, expand=True)
 
         ttk.Label(main, text="Список виконавців", font=(
-            None, 11, "bold")).pack(anchor="w")
+            "TkDefaultFont", 11, "bold")).pack(anchor="w")
 
         list_frame = ttk.Frame(main)
         list_frame.pack(fill=tk.BOTH, expand=True, pady=(6, 10))
@@ -678,7 +678,7 @@ class ProtocolProcessor:
                     run.font.name = 'Times New Roman'
                     run.font.size = Pt(14)
                     run.font.bold = True
-            header_cells[i].vertical_alignment = WD_ALIGN_PARAGRAPH.CENTER
+            header_cells[i].vertical_alignment = WD_CELL_VERTICAL_ALIGNMENT.CENTER
 
         for item in self.output_data:
             row_cells = table.add_row().cells
