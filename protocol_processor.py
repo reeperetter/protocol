@@ -21,6 +21,7 @@ from docx.shared import Pt, Inches
 from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.enum.table import WD_CELL_VERTICAL_ALIGNMENT
 
+
 # =============================================================================
 #  Шрифти для крос-платформного вигляду GUI (Windows / Linux / macOS)
 # =============================================================================
@@ -58,18 +59,33 @@ SCRIPT_DIR = os.path.dirname(os.path.abspath(
 EXECUTORS_FILE = os.path.join(SCRIPT_DIR, "executors.txt")
 
 DEFAULT_EXECUTORS = [
-    ("Бочін Сергій",        ["Сергію БОЧІНУ",
-     "Сергію Бочіну", "Сергій БОЧІН"]),
-    ("Гавриленко Лариса",   ["Ларисі ГАВРИЛЕНКО", "Ларисі Гавриленко"]),
-    ("Білогуб Вячеслав",    ["Вячеславу БІЛОГУБУ", "Вячеславу Білогубу"]),
-    ("Бука Олексій",        ["Олексію БУКА", "Олексію Буці"]),
-    ("Коренкова Юлія",      ["Юлії КОРЕНКОВІЙ", "Юлії Коренковій"]),
-    ("Леонтьєв Михайло",    ["Михайлу ЛЕОНТЬЄВУ", "Михайлу Леонтьєву"]),
-    ("Залуський Андрій",    ["Андрію ЗАЛУСЬКОМУ", "Андрію Залуському"]),
-    ("Іщенко Андрій",       ["Андрію ІЩЕНКО", "Андрію Іщенку"]),
-    ("Москаленко Ніна",     ["Ніні МОСКАЛЕНКО", "Ніні Москаленко"]),
-    ("Олінкевич Олег",      ["Олегу ОЛІНКЕВИЧ", "Олегу Олінкевичу"]),
-    ("Всім присутнім",      ["Всім присутнім"]),
+    ("Сергій Бочін",          [
+     "Сергію БОЧІНУ", "Сергію Бочіну", "Сергій БОЧІН"]),
+    ("Лариса Гавриленко",     ["Ларисі ГАВРИЛЕНКО",
+     "Ларисі Гавриленко", "Лариса ГАВРИЛЕНКО"]),
+    ("Аліна Лисенко-Гаманюк", ["Аліні ЛИСЕНКО-ГАМАНЮК",
+     "Аліні Лисенко-Гаманюк", "Аліна ЛИСЕНКО-ГАМАНЮК"]),
+    ("Олексій Бука",          [
+     "Олексію БУКА", "Олексію Бука", "Олексій БУКА"]),
+    ("Ірина Бардакова",       ["Ірині БАРДАКОВІЙ",
+     "Ірині Бардаковій", "Ірина БАРДАКОВА"]),
+    ("Ірина Бордакова",       ["Ірині БОРДАКОВІЙ",
+     "Ірині Бордаковій", "Ірина БОРДАКОВА"]),
+    ("Ірина Дикуша",          [
+     "Ірині ДИКУШІ", "Ірині Дикуші", "Ірина ДИКУША"]),
+    ("Юлія Коренкова",        ["Юлії КОРЕНКОВІЙ",
+     "Юлії Коренковій", "Юлія КОРЕНКОВА"]),
+    ("Михайло Леонтьєв",      ["Михайлу ЛЕОНТЬЄВУ",
+     "Михайлу Леонтьєву", "Михайло ЛЕОНТЬЄВ"]),
+    ("Андрій Залуський",      ["Андрію ЗАЛУСЬКОМУ",
+     "Андрію Залуському", "Андрій ЗАЛУСЬКИЙ"]),
+    ("Андрій Іщенко",         [
+     "Андрію ІЩЕНКО", "Андрію Іщенко", "Андрій ІЩЕНКО"]),
+    ("Ніна Москаленко",       ["Ніні МОСКАЛЕНКО",
+     "Ніні Москаленко", "Ніна МОСКАЛЕНКО"]),
+    ("Олег Олінкевич",        ["Олегу ОЛІНКЕВИЧ",
+     "Олегу Олінкевич", "Олег ОЛІНКЕВИЧ"]),
+    ("Всім присутнім",        ["Всім присутнім"]),
 ]
 
 
@@ -124,12 +140,13 @@ def build_executor_patterns(executors):
 # =============================================================================
 
 class ExecutorsManager(tk.Toplevel):
-    def __init__(self, parent, executors, on_save):
+    def __init__(self, parent, executors, on_save, ui_font="TkDefaultFont"):
         super().__init__(parent)
         self.title("Управління виконавцями")
         self.geometry("640x680")
         self.executors = [(c, list(v)) for c, v in executors]
         self.on_save = on_save
+        self.ui_font = ui_font
         self.transient(parent)
         self.grab_set()
         self._build_ui()
@@ -140,7 +157,7 @@ class ExecutorsManager(tk.Toplevel):
         main.pack(fill=tk.BOTH, expand=True)
 
         ttk.Label(main, text="Список виконавців", font=(
-            "TkDefaultFont", 11, "bold")).pack(anchor="w")
+            self.ui_font, 11, "bold")).pack(anchor="w")
 
         list_frame = ttk.Frame(main)
         list_frame.pack(fill=tk.BOTH, expand=True, pady=(6, 10))
@@ -180,7 +197,7 @@ class ExecutorsManager(tk.Toplevel):
 
         add_frame.columnconfigure(1, weight=1)
 
-        ttk.Button(add_frame, text="+ Додати виконавця", command=self._add_executor).grid(
+        ttk.Button(add_frame, text="Додати виконавця", command=self._add_executor).grid(
             row=2, column=0, columnspan=2, pady=(8, 0))
 
         btns = ttk.Frame(main)
@@ -231,7 +248,7 @@ class ProtocolProcessor:
     def __init__(self, root, ui_font):
         self.root = root
         self.ui_font = ui_font
-        self.root.title("Обробник протоколів → таблиця доручень")
+        self.root.title("Обробник протоколів - таблиця доручень")
         self.root.geometry("1100x700")
         self.root.minsize(950, 600)
 
@@ -261,21 +278,18 @@ class ProtocolProcessor:
         style.configure("SubHeader.TLabel", font=(self.ui_font, 10))
         style.configure("Treeview", font=base, rowheight=26)
         style.configure("Treeview.Heading", font=bold)
-        style.configure("Card.TFrame", background="#f4f7fa")
 
     def _build_ui(self):
-        # ---- Верхня панель ----
         top = ttk.Frame(self.root, padding=(16, 14, 16, 8))
         top.pack(fill=tk.X)
 
-        ttk.Label(top, text="📋 Обробник протоколів",
+        ttk.Label(top, text="Обробник протоколів",
                   style="Header.TLabel").pack(anchor="w")
         ttk.Label(top, text="Перетворює протокол засідання у структуровану таблицю доручень",
                   style="SubHeader.TLabel").pack(anchor="w", pady=(2, 0))
 
         ttk.Separator(self.root).pack(fill=tk.X, padx=16)
 
-        # ---- Основна область: ліва панель дій + права панель перегляду ----
         body = ttk.Frame(self.root, padding=16)
         body.pack(fill=tk.BOTH, expand=True)
         body.columnconfigure(1, weight=1)
@@ -293,13 +307,13 @@ class ProtocolProcessor:
             step1, text="Файл не вибрано", wraplength=250, foreground="#666")
         self.file_label.pack(fill=tk.X, pady=(0, 8))
 
-        ttk.Button(step1, text="📂 Вибрати файл .docx",
+        ttk.Button(step1, text="Вибрати файл .docx",
                    command=self.select_file).pack(fill=tk.X)
 
         step2 = ttk.LabelFrame(left, text="2. Обробка", padding=12)
         step2.pack(fill=tk.X, pady=(0, 12))
 
-        ttk.Button(step2, text="⚙ Обробити файл", style="Accent.TButton",
+        ttk.Button(step2, text="Обробити файл", style="Accent.TButton",
                    command=self.process_file).pack(fill=tk.X)
 
         self.status_label = ttk.Label(
@@ -309,20 +323,20 @@ class ProtocolProcessor:
         step3 = ttk.LabelFrame(left, text="3. Результат", padding=12)
         step3.pack(fill=tk.X, pady=(0, 12))
 
-        ttk.Button(step3, text="💾 Зберегти таблицю (.docx)",
+        ttk.Button(step3, text="Зберегти таблицю (.docx)",
                    command=self.save_result).pack(fill=tk.X, pady=(0, 6))
-        ttk.Button(step3, text="🗑 Очистити все",
+        ttk.Button(step3, text="Очистити все",
                    command=self.clear_all).pack(fill=tk.X)
 
         step4 = ttk.LabelFrame(left, text="Виконавці", padding=12)
         step4.pack(fill=tk.X)
 
-        ttk.Button(step4, text="👥 Управління виконавцями",
+        ttk.Button(step4, text="Управління виконавцями",
                    command=self.open_executors_manager).pack(fill=tk.X)
         ttk.Label(step4, text=f"Файл: {os.path.basename(EXECUTORS_FILE)}",
                   foreground="#666", font=(self.ui_font, 8)).pack(anchor="w", pady=(6, 0))
 
-        # ПРАВА ПАНЕЛЬ - ПЕРЕГЛЯД РЕЗУЛЬТАТУ
+        # ПРАВА ПАНЕЛЬ
         right = ttk.LabelFrame(
             body, text="Попередній перегляд доручень", padding=10)
         right.grid(row=0, column=1, sticky="nsew")
@@ -363,11 +377,12 @@ class ProtocolProcessor:
         if file_path:
             self.input_file = file_path
             self.file_label.config(
-                text=f"✓ {os.path.basename(file_path)}", foreground="#2e7d32")
+                text=f"Обрано: {os.path.basename(file_path)}", foreground="#2e7d32")
             self.status_label.config(text="")
 
     def open_executors_manager(self):
-        ExecutorsManager(self.root, self.executors, self._on_executors_saved)
+        ExecutorsManager(self.root, self.executors,
+                         self._on_executors_saved, ui_font=self.ui_font)
 
     def _on_executors_saved(self, new_executors):
         self.executors = new_executors
@@ -408,7 +423,6 @@ class ProtocolProcessor:
         date_match = re.search(r'(\d{2}\.\d{2}\.\d{4})', full_text)
         protocol_date = date_match.group(1) if date_match else "?"
 
-        # Починаємо парсинг від слова "ВИРІШЕНО"
         decisions_start = -1
         for keyword in ['ВИРІШЕНО', 'вирішено', 'Вирішено']:
             pos = full_text.find(keyword)
@@ -418,7 +432,6 @@ class ProtocolProcessor:
         work_text = full_text[decisions_start:] if decisions_start != - \
             1 else full_text
 
-        # Відсікаємо все, що починається з "Протокол вела" / "Протокол вів"
         end_match = re.search(r'Протокол\s+(вела|вів)',
                               work_text, re.IGNORECASE)
         if end_match:
@@ -464,6 +477,11 @@ class ProtocolProcessor:
 
             numbered_match = re.match(r'^(\d+)\.?\s+', line_stripped)
             if numbered_match and len(numbered_match.group(1)) <= 3:
+                is_new_decision = True
+
+            is_meeting_start = bool(re.match(r'^(Призначити (?:наступне|чергове) засідання|Наступне засідання)',
+                                             line_stripped, re.IGNORECASE))
+            if is_meeting_start:
                 is_new_decision = True
 
             if is_new_decision:
@@ -517,7 +535,7 @@ class ProtocolProcessor:
                     after_text = after_text[0].upper() + after_text[1:]
                     after_item = dict(item)
                     after_item['text'] = after_text
-                    after_item['executor'] = 'Всі присутні'
+                    after_item['executor'] = 'Не вказано'
                     result.append(after_item)
             else:
                 result.append(item)
@@ -573,12 +591,12 @@ class ProtocolProcessor:
             self.output_data = self.sort_data(raw_data)
             self.update_display()
             self.status_label.config(
-                text=f"✓ Оброблено успішно: {len(self.output_data)} доручень", foreground="#2e7d32")
+                text=f"Оброблено успішно: {len(self.output_data)} доручень", foreground="#2e7d32")
         except Exception as e:
             messagebox.showerror(
                 "Помилка", f"Не вдалося обробити файл:\n{str(e)}")
             self.status_label.config(
-                text="✗ Помилка обробки", foreground="#c62828")
+                text="Помилка обробки", foreground="#c62828")
 
     def update_display(self):
         self.tree.delete(*self.tree.get_children())
@@ -629,7 +647,6 @@ class ProtocolProcessor:
         section.top_margin = Inches(0.5)
         section.bottom_margin = Inches(0.5)
 
-        # Дата наступного засідання - перша реальна дата у відсортованому списку
         next_meeting_date = "Не вказано"
         for item in self.output_data:
             if re.match(r'^\d{2}\.\d{2}\.\d{4}$', item['deadline']):
@@ -709,7 +726,7 @@ class ProtocolProcessor:
             for run in paragraph.runs:
                 run.font.name = 'Times New Roman'
                 run.font.size = Pt(14)
-        cell.vertical_alignment = WD_ALIGN_PARAGRAPH.CENTER
+        cell.vertical_alignment = WD_CELL_VERTICAL_ALIGNMENT.CENTER
 
 
 def main():
