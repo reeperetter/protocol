@@ -47,15 +47,25 @@ jobs:
         if: steps.check.outputs.run == 'true'
         uses: actions/checkout@v4
 
+      - name: Set up Python (офіційна збірка - зі стандартним Tcl/Tk 8.6)
+        if: steps.check.outputs.run == 'true'
+        uses: actions/setup-python@v5
+        with:
+          python-version-file: '.python-version'
+
       - name: Install uv
         if: steps.check.outputs.run == 'true'
         uses: astral-sh/setup-uv@v3
         with:
           enable-cache: true
 
-      - name: Set up Python
+      # Кажемо uv не качати свою власну збірку Python (у якій на Linux -
+      # непідтримуваний ніде Tcl/Tk 9.0), а використати щойно встановлений
+      # офіційний Python вище.
+      - name: Configure uv to use system Python
         if: steps.check.outputs.run == 'true'
-        run: uv python install
+        shell: bash
+        run: echo "UV_PYTHON_PREFERENCE=only-system" >> "$GITHUB_ENV"
 
       # На Linux потрібні системні пакети для tkinter - вони не ставляться через pip/uv
       - name: Install Tkinter system package (Linux only)
