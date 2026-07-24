@@ -24,7 +24,7 @@ jobs:
         include:
           - os: windows-latest
             name: windows
-          - os: ubuntu-latest
+          - os: ubuntu-22.04
             name: linux
 
     runs-on: ${{ matrix.os }}
@@ -37,7 +37,7 @@ jobs:
           if [ "${{ github.event_name }}" != "workflow_dispatch" ] || \
              [ "${{ inputs.platforms }}" == "both" ] || \
              { [ "${{ inputs.platforms }}" == "windows-only" ] && [ "${{ matrix.os }}" == "windows-latest" ]; } || \
-             { [ "${{ inputs.platforms }}" == "linux-only" ] && [ "${{ matrix.os }}" == "ubuntu-latest" ]; }; then
+             { [ "${{ inputs.platforms }}" == "linux-only" ] && [ "${{ matrix.os }}" == "ubuntu-22.04" ]; }; then
             echo "run=true" >> "$GITHUB_OUTPUT"
           else
             echo "run=false" >> "$GITHUB_OUTPUT"
@@ -59,7 +59,7 @@ jobs:
 
       # На Linux потрібні системні пакети для tkinter - вони не ставляться через pip/uv
       - name: Install Tkinter system package (Linux only)
-        if: steps.check.outputs.run == 'true' && matrix.os == 'ubuntu-latest'
+        if: steps.check.outputs.run == 'true' && matrix.os == 'ubuntu-22.04'
         run: |
           sudo apt-get update
           sudo apt-get install -y python3-tk
@@ -78,7 +78,7 @@ jobs:
 
       # ---- Збірка для Linux (звичайний бінарник) ----
       - name: Build binary (Linux)
-        if: steps.check.outputs.run == 'true' && matrix.os == 'ubuntu-latest'
+        if: steps.check.outputs.run == 'true' && matrix.os == 'ubuntu-22.04'
         run: |
           uv run pyinstaller --onefile --windowed --name ProtocolProcessor \
             --add-data "executors.txt:." \
