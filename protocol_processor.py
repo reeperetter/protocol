@@ -35,8 +35,7 @@ def get_ui_font():
     elif system == "Darwin":
         candidates = ["Helvetica Neue", "Helvetica", "Arial"]
     else:
-        candidates = ["Noto Sans", "DejaVu Sans",
-                      "Liberation Sans", "Arial", "Ubuntu"]
+        candidates = ["Noto Sans", "DejaVu Sans", "Liberation Sans", "Arial", "Ubuntu"]
 
     try:
         import tkinter.font as tkfont
@@ -54,37 +53,23 @@ def get_ui_font():
 #  Робота зі списком виконавців (окремий .txt файл)
 # =============================================================================
 
-SCRIPT_DIR = os.path.dirname(os.path.abspath(
-    __file__)) if "__file__" in globals() else os.getcwd()
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__)) if "__file__" in globals() else os.getcwd()
 EXECUTORS_FILE = os.path.join(SCRIPT_DIR, "executors.txt")
 
 DEFAULT_EXECUTORS = [
-    ("Сергій Бочін",          [
-     "Сергію БОЧІНУ", "Сергію Бочіну", "Сергій БОЧІН"]),
-    ("Лариса Гавриленко",     ["Ларисі ГАВРИЛЕНКО",
-     "Ларисі Гавриленко", "Лариса ГАВРИЛЕНКО"]),
-    ("Аліна Лисенко-Гаманюк", ["Аліні ЛИСЕНКО-ГАМАНЮК",
-     "Аліні Лисенко-Гаманюк", "Аліна ЛИСЕНКО-ГАМАНЮК"]),
-    ("Олексій Бука",          [
-     "Олексію БУКА", "Олексію Бука", "Олексій БУКА"]),
-    ("Ірина Бардакова",       ["Ірині БАРДАКОВІЙ",
-     "Ірині Бардаковій", "Ірина БАРДАКОВА"]),
-    ("Ірина Бордакова",       ["Ірині БОРДАКОВІЙ",
-     "Ірині Бордаковій", "Ірина БОРДАКОВА"]),
-    ("Ірина Дикуша",          [
-     "Ірині ДИКУШІ", "Ірині Дикуші", "Ірина ДИКУША"]),
-    ("Юлія Коренкова",        ["Юлії КОРЕНКОВІЙ",
-     "Юлії Коренковій", "Юлія КОРЕНКОВА"]),
-    ("Михайло Леонтьєв",      ["Михайлу ЛЕОНТЬЄВУ",
-     "Михайлу Леонтьєву", "Михайло ЛЕОНТЬЄВ"]),
-    ("Андрій Залуський",      ["Андрію ЗАЛУСЬКОМУ",
-     "Андрію Залуському", "Андрій ЗАЛУСЬКИЙ"]),
-    ("Андрій Іщенко",         [
-     "Андрію ІЩЕНКО", "Андрію Іщенко", "Андрій ІЩЕНКО"]),
-    ("Ніна Москаленко",       ["Ніні МОСКАЛЕНКО",
-     "Ніні Москаленко", "Ніна МОСКАЛЕНКО"]),
-    ("Олег Олінкевич",        ["Олегу ОЛІНКЕВИЧ",
-     "Олегу Олінкевич", "Олег ОЛІНКЕВИЧ"]),
+    ("Сергій Бочін",          ["Сергію БОЧІНУ", "Сергію Бочіну", "Сергій БОЧІН"]),
+    ("Лариса Гавриленко",     ["Ларисі ГАВРИЛЕНКО", "Ларисі Гавриленко", "Лариса ГАВРИЛЕНКО"]),
+    ("Аліна Лисенко-Гаманюк", ["Аліні ЛИСЕНКО-ГАМАНЮК", "Аліні Лисенко-Гаманюк", "Аліна ЛИСЕНКО-ГАМАНЮК"]),
+    ("Олексій Бука",          ["Олексію БУКА", "Олексію Бука", "Олексій БУКА"]),
+    ("Ірина Бардакова",       ["Ірині БАРДАКОВІЙ", "Ірині Бардаковій", "Ірина БАРДАКОВА"]),
+    ("Ірина Бордакова",       ["Ірині БОРДАКОВІЙ", "Ірині Бордаковій", "Ірина БОРДАКОВА"]),
+    ("Ірина Дикуша",          ["Ірині ДИКУШІ", "Ірині Дикуші", "Ірина ДИКУША"]),
+    ("Юлія Коренкова",        ["Юлії КОРЕНКОВІЙ", "Юлії Коренковій", "Юлія КОРЕНКОВА"]),
+    ("Михайло Леонтьєв",      ["Михайлу ЛЕОНТЬЄВУ", "Михайлу Леонтьєву", "Михайло ЛЕОНТЬЄВ"]),
+    ("Андрій Залуський",      ["Андрію ЗАЛУСЬКОМУ", "Андрію Залуському", "Андрій ЗАЛУСЬКИЙ"]),
+    ("Андрій Іщенко",         ["Андрію ІЩЕНКО", "Андрію Іщенко", "Андрій ІЩЕНКО"]),
+    ("Ніна Москаленко",       ["Ніні МОСКАЛЕНКО", "Ніні Москаленко", "Ніна МОСКАЛЕНКО"]),
+    ("Олег Олінкевич",        ["Олегу ОЛІНКЕВИЧ", "Олегу Олінкевич", "Олег ОЛІНКЕВИЧ"]),
     ("Всім присутнім",        ["Всім присутнім"]),
 ]
 
@@ -104,8 +89,7 @@ def load_executors():
                 if not line or line.startswith("#") or "|" not in line:
                     continue
                 canonical, variants_str = line.split("|", 1)
-                variants = [v.strip()
-                            for v in variants_str.split(",") if v.strip()]
+                variants = [v.strip() for v in variants_str.split(",") if v.strip()]
                 if canonical.strip() and variants:
                     executors.append((canonical.strip(), variants))
     except Exception:
@@ -135,6 +119,25 @@ def build_executor_patterns(executors):
     return patterns
 
 
+# Ці виконавці завжди йдуть першими (у цьому порядку) в межах кожної дати,
+# перш ніж інші сортуються за абеткою.
+PRIORITY_EXECUTORS = [
+    "Сергій Бочін",
+    "Лариса Гавриленко",
+    "Аліна Лисенко-Гаманюк",
+]
+
+
+def executor_priority_rank(executor_name):
+    """Повертає ранг пріоритету виконавця: менше число = раніше в списку.
+    Якщо виконавець не у списку пріоритетів - повертає велике число,
+    щоб такі йшли після всіх пріоритетних (і далі сортувались за абеткою)."""
+    try:
+        return PRIORITY_EXECUTORS.index(executor_name)
+    except ValueError:
+        return len(PRIORITY_EXECUTORS)
+
+
 # =============================================================================
 #  Вікно управління виконавцями
 # =============================================================================
@@ -156,44 +159,36 @@ class ExecutorsManager(tk.Toplevel):
         main = ttk.Frame(self, padding=12)
         main.pack(fill=tk.BOTH, expand=True)
 
-        ttk.Label(main, text="Список виконавців", font=(
-            self.ui_font, 11, "bold")).pack(anchor="w")
+        ttk.Label(main, text="Список виконавців", font=(self.ui_font, 11, "bold")).pack(anchor="w")
 
         list_frame = ttk.Frame(main)
         list_frame.pack(fill=tk.BOTH, expand=True, pady=(6, 10))
 
         columns = ("name", "variants")
-        self.tree = ttk.Treeview(
-            list_frame, columns=columns, show="headings", height=10)
+        self.tree = ttk.Treeview(list_frame, columns=columns, show="headings", height=10)
         self.tree.heading("name", text="Ім'я (як у таблиці)")
         self.tree.heading("variants", text="Форми з протоколу (через кому)")
         self.tree.column("name", width=180, anchor="w")
         self.tree.column("variants", width=380, anchor="w")
         self.tree.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
 
-        scroll = ttk.Scrollbar(
-            list_frame, orient="vertical", command=self.tree.yview)
+        scroll = ttk.Scrollbar(list_frame, orient="vertical", command=self.tree.yview)
         scroll.pack(side=tk.LEFT, fill=tk.Y)
         self.tree.configure(yscrollcommand=scroll.set)
 
-        ttk.Button(main, text="Видалити вибраного",
-                   command=self._remove_selected).pack(anchor="w")
+        ttk.Button(main, text="Видалити вибраного", command=self._remove_selected).pack(anchor="w")
 
-        add_frame = ttk.LabelFrame(
-            main, text="Додати нового виконавця", padding=10)
+        add_frame = ttk.LabelFrame(main, text="Додати нового виконавця", padding=10)
         add_frame.pack(fill=tk.X, pady=(12, 0))
 
-        ttk.Label(add_frame, text="Ім'я (напр. «Бочін Сергій»):").grid(
-            row=0, column=0, sticky="w", pady=3)
+        ttk.Label(add_frame, text="Ім'я (напр. «Бочін Сергій»):").grid(row=0, column=0, sticky="w", pady=3)
         self.name_var = tk.StringVar()
-        ttk.Entry(add_frame, textvariable=self.name_var, width=45).grid(
-            row=0, column=1, pady=3, sticky="we")
+        ttk.Entry(add_frame, textvariable=self.name_var, width=45).grid(row=0, column=1, pady=3, sticky="we")
 
         ttk.Label(add_frame, text="Форми в протоколі, через кому\n(напр. «Сергію БОЧІНУ, Сергію Бочіну»):").grid(
             row=1, column=0, sticky="w", pady=3)
         self.variants_var = tk.StringVar()
-        ttk.Entry(add_frame, textvariable=self.variants_var, width=45).grid(
-            row=1, column=1, pady=3, sticky="we")
+        ttk.Entry(add_frame, textvariable=self.variants_var, width=45).grid(row=1, column=1, pady=3, sticky="we")
 
         add_frame.columnconfigure(1, weight=1)
 
@@ -202,23 +197,19 @@ class ExecutorsManager(tk.Toplevel):
 
         btns = ttk.Frame(main)
         btns.pack(fill=tk.X, pady=(14, 0))
-        ttk.Button(btns, text="Зберегти і закрити",
-                   command=self._save_and_close).pack(side=tk.RIGHT, padx=4)
-        ttk.Button(btns, text="Скасувати", command=self.destroy).pack(
-            side=tk.RIGHT, padx=4)
+        ttk.Button(btns, text="Зберегти і закрити", command=self._save_and_close).pack(side=tk.RIGHT, padx=4)
+        ttk.Button(btns, text="Скасувати", command=self.destroy).pack(side=tk.RIGHT, padx=4)
 
     def _refresh_list(self):
         self.tree.delete(*self.tree.get_children())
         for canonical, variants in self.executors:
-            self.tree.insert("", "end", values=(
-                canonical, ", ".join(variants)))
+            self.tree.insert("", "end", values=(canonical, ", ".join(variants)))
 
     def _add_executor(self):
         name = self.name_var.get().strip()
         variants_raw = self.variants_var.get().strip()
         if not name or not variants_raw:
-            messagebox.showwarning(
-                "Увага", "Заповніть обидва поля - ім'я та хоча б одну форму з протоколу.")
+            messagebox.showwarning("Увага", "Заповніть обидва поля - ім'я та хоча б одну форму з протоколу.")
             return
         variants = [v.strip() for v in variants_raw.split(",") if v.strip()]
         self.executors.append((name, variants))
@@ -283,8 +274,7 @@ class ProtocolProcessor:
         top = ttk.Frame(self.root, padding=(16, 14, 16, 8))
         top.pack(fill=tk.X)
 
-        ttk.Label(top, text="Обробник протоколів",
-                  style="Header.TLabel").pack(anchor="w")
+        ttk.Label(top, text="Обробник протоколів", style="Header.TLabel").pack(anchor="w")
         ttk.Label(top, text="Перетворює протокол засідання у структуровану таблицю доручень",
                   style="SubHeader.TLabel").pack(anchor="w", pady=(2, 0))
 
@@ -303,12 +293,10 @@ class ProtocolProcessor:
         step1 = ttk.LabelFrame(left, text="1. Файл протоколу", padding=12)
         step1.pack(fill=tk.X, pady=(0, 12))
 
-        self.file_label = ttk.Label(
-            step1, text="Файл не вибрано", wraplength=250, foreground="#666")
+        self.file_label = ttk.Label(step1, text="Файл не вибрано", wraplength=250, foreground="#666")
         self.file_label.pack(fill=tk.X, pady=(0, 8))
 
-        ttk.Button(step1, text="Вибрати файл .docx",
-                   command=self.select_file).pack(fill=tk.X)
+        ttk.Button(step1, text="Вибрати файл .docx", command=self.select_file).pack(fill=tk.X)
 
         step2 = ttk.LabelFrame(left, text="2. Обробка", padding=12)
         step2.pack(fill=tk.X, pady=(0, 12))
@@ -316,29 +304,24 @@ class ProtocolProcessor:
         ttk.Button(step2, text="Обробити файл", style="Accent.TButton",
                    command=self.process_file).pack(fill=tk.X)
 
-        self.status_label = ttk.Label(
-            step2, text="", foreground="#2e7d32", wraplength=250)
+        self.status_label = ttk.Label(step2, text="", foreground="#2e7d32", wraplength=250)
         self.status_label.pack(fill=tk.X, pady=(8, 0))
 
         step3 = ttk.LabelFrame(left, text="3. Результат", padding=12)
         step3.pack(fill=tk.X, pady=(0, 12))
 
-        ttk.Button(step3, text="Зберегти таблицю (.docx)",
-                   command=self.save_result).pack(fill=tk.X, pady=(0, 6))
-        ttk.Button(step3, text="Очистити все",
-                   command=self.clear_all).pack(fill=tk.X)
+        ttk.Button(step3, text="Зберегти таблицю (.docx)", command=self.save_result).pack(fill=tk.X, pady=(0, 6))
+        ttk.Button(step3, text="Очистити все", command=self.clear_all).pack(fill=tk.X)
 
         step4 = ttk.LabelFrame(left, text="Виконавці", padding=12)
         step4.pack(fill=tk.X)
 
-        ttk.Button(step4, text="Управління виконавцями",
-                   command=self.open_executors_manager).pack(fill=tk.X)
+        ttk.Button(step4, text="Управління виконавцями", command=self.open_executors_manager).pack(fill=tk.X)
         ttk.Label(step4, text=f"Файл: {os.path.basename(EXECUTORS_FILE)}",
                   foreground="#666", font=(self.ui_font, 8)).pack(anchor="w", pady=(6, 0))
 
         # ПРАВА ПАНЕЛЬ
-        right = ttk.LabelFrame(
-            body, text="Попередній перегляд доручень", padding=10)
+        right = ttk.LabelFrame(body, text="Попередній перегляд доручень", padding=10)
         right.grid(row=0, column=1, sticky="nsew")
         right.rowconfigure(0, weight=1)
         right.columnconfigure(0, weight=1)
@@ -356,17 +339,14 @@ class ProtocolProcessor:
 
         self.tree.grid(row=0, column=0, sticky="nsew")
 
-        vscroll = ttk.Scrollbar(right, orient="vertical",
-                                command=self.tree.yview)
+        vscroll = ttk.Scrollbar(right, orient="vertical", command=self.tree.yview)
         vscroll.grid(row=0, column=1, sticky="ns")
         self.tree.configure(yscrollcommand=vscroll.set)
 
         self.tree.bind("<Double-1>", self._show_full_text)
 
-        self.count_label = ttk.Label(
-            right, text="Доручень ще не знайдено", foreground="#666")
-        self.count_label.grid(
-            row=1, column=0, columnspan=2, sticky="w", pady=(8, 0))
+        self.count_label = ttk.Label(right, text="Доручень ще не знайдено", foreground="#666")
+        self.count_label.grid(row=1, column=0, columnspan=2, sticky="w", pady=(8, 0))
 
     # ------------------------------------------------------------ Дії GUI --
     def select_file(self):
@@ -376,13 +356,11 @@ class ProtocolProcessor:
         )
         if file_path:
             self.input_file = file_path
-            self.file_label.config(
-                text=f"Обрано: {os.path.basename(file_path)}", foreground="#2e7d32")
+            self.file_label.config(text=f"Обрано: {os.path.basename(file_path)}", foreground="#2e7d32")
             self.status_label.config(text="")
 
     def open_executors_manager(self):
-        ExecutorsManager(self.root, self.executors,
-                         self._on_executors_saved, ui_font=self.ui_font)
+        ExecutorsManager(self.root, self.executors, self._on_executors_saved, ui_font=self.ui_font)
 
     def _on_executors_saved(self, new_executors):
         self.executors = new_executors
@@ -394,7 +372,7 @@ class ProtocolProcessor:
             return
         values = self.tree.item(sel[0], "values")
         messagebox.showinfo(f"Доручення № {values[0]}",
-                            f"Виконавець: {values[2]}\nТермін: {values[1]}\n\n{values[3]}")
+                             f"Виконавець: {values[2]}\nТермін: {values[1]}\n\n{values[3]}")
 
     # -------------------------------------------------------- Обробка тексту --
     def _parse_deadline(self, line):
@@ -407,8 +385,7 @@ class ProtocolProcessor:
             return date_match.group(1)
         if 'постійно' in line.lower():
             return 'постійно'
-        after_colon = re.split(
-            r'ермін[^:]*:\s*', line, maxsplit=1, flags=re.IGNORECASE)
+        after_colon = re.split(r'ермін[^:]*:\s*', line, maxsplit=1, flags=re.IGNORECASE)
         if len(after_colon) > 1:
             text = after_colon[1].strip().rstrip('.').strip()
             if text:
@@ -429,11 +406,9 @@ class ProtocolProcessor:
             if pos != -1:
                 decisions_start = pos
                 break
-        work_text = full_text[decisions_start:] if decisions_start != - \
-            1 else full_text
+        work_text = full_text[decisions_start:] if decisions_start != -1 else full_text
 
-        end_match = re.search(r'Протокол\s+(вела|вів)',
-                              work_text, re.IGNORECASE)
+        end_match = re.search(r'Протокол\s+(вела|вів)', work_text, re.IGNORECASE)
         if end_match:
             work_text = work_text[:end_match.start()]
 
@@ -449,12 +424,11 @@ class ProtocolProcessor:
 
         def flush():
             if current_text:
-                text_combined = re.sub(
-                    r'\s+', ' ', ' '.join(current_text)).strip()
+                text_combined = re.sub(r'\s+', ' ', ' '.join(current_text)).strip()
                 if text_combined:
                     decisions.append({
                         'text': text_combined,
-                        'executor': current_executor or 'Не вказано',
+                        'executor': current_executor or 'Всім присутнім',
                         'date_given': protocol_date,
                         'deadline': current_deadline or 'Не вказано',
                     })
@@ -480,7 +454,7 @@ class ProtocolProcessor:
                 is_new_decision = True
 
             is_meeting_start = bool(re.match(r'^(Призначити (?:наступне|чергове) засідання|Наступне засідання)',
-                                             line_stripped, re.IGNORECASE))
+                                              line_stripped, re.IGNORECASE))
             if is_meeting_start:
                 is_new_decision = True
 
@@ -491,8 +465,7 @@ class ProtocolProcessor:
                 if numbered_match:
                     clean_line = clean_line[numbered_match.end():].strip()
                 if matched_pattern:
-                    clean_line = re.sub(matched_pattern, '',
-                                        clean_line, flags=re.IGNORECASE).strip()
+                    clean_line = re.sub(matched_pattern, '', clean_line, flags=re.IGNORECASE).strip()
 
                 if clean_line:
                     clean_line = clean_line[0].upper() + clean_line[1:]
@@ -566,13 +539,13 @@ class ProtocolProcessor:
                 value = deadline
 
             text_lower = item['text'].lower()
-            is_meeting = (
-                'наступне засідання' in text_lower or 'призначити наступне' in text_lower)
+            is_meeting = ('наступне засідання' in text_lower or 'призначити наступне' in text_lower)
             meeting_priority = 1 if is_meeting else 0
 
             executor = item['executor'] if item['executor'] != 'Не вказано' else 'ЯЯЯ'
+            priority_rank = executor_priority_rank(executor)
 
-            return (category, value, meeting_priority, executor)
+            return (category, value, meeting_priority, priority_rank, executor)
 
         sorted_list = sorted(data, key=sort_key)
         for i, item in enumerate(sorted_list, start=1):
@@ -582,8 +555,7 @@ class ProtocolProcessor:
     # --------------------------------------------------------------- Кнопки --
     def process_file(self):
         if not self.input_file:
-            messagebox.showwarning(
-                "Увага", "Спочатку виберіть файл протоколу!")
+            messagebox.showwarning("Увага", "Спочатку виберіть файл протоколу!")
             return
 
         try:
@@ -593,20 +565,16 @@ class ProtocolProcessor:
             self.status_label.config(
                 text=f"Оброблено успішно: {len(self.output_data)} доручень", foreground="#2e7d32")
         except Exception as e:
-            messagebox.showerror(
-                "Помилка", f"Не вдалося обробити файл:\n{str(e)}")
-            self.status_label.config(
-                text="Помилка обробки", foreground="#c62828")
+            messagebox.showerror("Помилка", f"Не вдалося обробити файл:\n{str(e)}")
+            self.status_label.config(text="Помилка обробки", foreground="#c62828")
 
     def update_display(self):
         self.tree.delete(*self.tree.get_children())
         for item in self.output_data:
-            preview = item['text'] if len(
-                item['text']) <= 140 else item['text'][:137] + "..."
-            self.tree.insert("", "end", values=(
-                item['num'], item['deadline'], item['executor'], preview))
+            preview = item['text'] if len(item['text']) <= 140 else item['text'][:137] + "..."
+            self.tree.insert("", "end", values=(item['num'], item['deadline'], item['executor'], preview))
         self.count_label.config(text=f"Знайдено доручень: {len(self.output_data)}  "
-                                f"(подвійний клік - переглянути повний текст)")
+                                      f"(подвійний клік - переглянути повний текст)")
 
     def save_result(self):
         if not self.output_data:
@@ -621,11 +589,9 @@ class ProtocolProcessor:
         if save_path:
             try:
                 self.create_table_document(save_path)
-                messagebox.showinfo(
-                    "Успіх", f"Таблицю збережено:\n{save_path}")
+                messagebox.showinfo("Успіх", f"Таблицю збережено:\n{save_path}")
             except Exception as e:
-                messagebox.showerror(
-                    "Помилка", f"Не вдалося зберегти файл:\n{str(e)}")
+                messagebox.showerror("Помилка", f"Не вдалося зберегти файл:\n{str(e)}")
 
     def clear_all(self):
         self.input_file = None
